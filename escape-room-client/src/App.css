@@ -429,4 +429,67 @@ button {
     text-decoration: none;
 }
 
+/* EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> wygląd formularza */
+.register-form {
+    display: grid;
+    gap: 18px;
+    max-width: 400px;
+    margin: 45px auto 0;
+    padding: 32px;
+    text-align: left;
+    background: #181715;
+    border: 1px solid #ffffff19;
+}
 
+    .register-form label {
+        display: grid;
+        gap: 8px;
+        color: #8f887d;
+        font-size: 10px;
+        letter-spacing: 1.5px;
+    }
+
+    .register-form input {
+        padding: 13px 15px;
+        color: #f5f0e8;
+        background: #10100f;
+        border: 1px solid #ffffff25;
+        font: inherit;
+        font-size: 15px;
+        letter-spacing: normal;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+        .register-form input:focus {
+            border-color: #d9a85b;
+        }
+
+.register-hint {
+    color: #8f887d;
+    font-size: 12px;
+}
+
+.register-form .start-button {
+    justify-content: center;
+    margin-top: 4px;
+}
+
+/* EPIC 1 US-01 TASK-04: Walidacja i komunikaty rejestracji -> wygląd komunikatów */
+.register-message {
+    padding: 13px 15px;
+    font-size: 14px;
+    border: 1px solid;
+}
+
+    .register-message.success {
+        color: #6fc995;
+        background: #6fc99515;
+        border-color: #6fc99560;
+    }
+
+    .register-message.error {
+        color: #e07a6b;
+        background: #e07a6b15;
+        border-color: #e07a6b60;
+    }
