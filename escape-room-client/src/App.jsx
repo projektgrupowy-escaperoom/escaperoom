@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Rooms from './pages/Rooms'
 import RoomDetails from './pages/RoomDetails'
 import Register from './pages/Register' // EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> import strony rejestracji
+import Login from './pages/Login'
 import './App.css'
 
 function App() {
@@ -38,6 +39,10 @@ function App() {
                         MYSTERY ROOMS
                     </Link>
 
+                    <Link to="/login" className="nav-label nav-link">
+                        ZALOGUJ SIĘ
+                    </Link>
+
                     {/* EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> link w menu */}
                     <Link to="/register" className="nav-label nav-link">
                         ZAŁÓŻ KONTO
@@ -51,6 +56,8 @@ function App() {
                 <Route path="/rooms/:id" element={<RoomDetails />} />
                 {/* EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> adres strony */}
                 <Route path="/register" element={<Register />} />
+                {/* EPIC 1 US-01 TASK-05: Utworzenie formularza logowania -> adres strony */}
+                <Route path="/login" element={<Login />} />
                 <Route
                     path="*"
                     element={

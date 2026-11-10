@@ -38,5 +38,41 @@ public static class AuthEndpoints
 			//EPIC 1 US-01 TASK-04: Walidacja i komunikaty rejestracji -> konto utworzone prawidłowo
 			return Results.Ok(new { message = "Konto zostało utworzone!" });
 		});
-	}
+
+        // EPIC 1 US-01 TASK-06: Implementacja logiki logowania
+        app.MapPost("/api/auth/login", async (LoginRequest r, AppDb db) =>
+        {
+            var login = r.Login?.Trim() ?? "";
+            var password = r.Password ?? "";
+
+            // EPIC 1 US-01 TASK-06: Implementacja logiki logowania -> sprawdzanie danych wejściowych
+            if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+                return Results.BadRequest(new { message = "Podaj login i hasło." });
+
+            // EPIC 1 US-01 TASK-06: Implementacja logiki logowania -> wyszukiwanie użytkownika
+            var normalizedLogin = login.ToLowerInvariant();
+
+            var user = await db.Users.FirstOrDefaultAsync(u =>
+                u.Email == normalizedLogin || u.Username.ToLower() == normalizedLogin);
+
+            // EPIC 1 US-01 TASK-06: Implementacja logiki logowania -> weryfikacja hasła
+            if (user == null)
+                return Results.Json(
+                    new { message = "Nieprawidłowy login lub hasło." },
+                    statusCode: StatusCodes.Status401Unauthorized
+                );
+
+            var passwordHasher = new PasswordHasher<User>();
+            var result = passwordHasher.VerifyHashedPassword(user, user.Password, password);
+
+            if (result == PasswordVerificationResult.Failed)
+               return Results.Json(
+                new { message = "Nieprawidłowy login lub hasło." },
+                statusCode: StatusCodes.Status401Unauthorized
+            );
+
+            // EPIC 1 US-01 TASK-06: Implementacja logiki logowania -> poprawne uwierzytelnienie
+            return Results.Ok(new { message = "Zalogowano pomyślnie!" });
+        });
+    }
 }
