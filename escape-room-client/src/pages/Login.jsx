@@ -13,16 +13,27 @@ export default function Login() {
         setMessage(null)
 
         try {
-            const res = await fetch('http://localhost:5162/api/auth/login', {
+
+            const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+
+                // EPIC 1 US-01 TASK-07: Przesyłanie ciasteczka sesji
+                credentials: 'include',
+
                 body: JSON.stringify(form),
             })
+
+
 
             const data = await res.json()
 
             // EPIC 1 US-01 TASK-06: Implementacja logiki logowania -> komunikat z serwera
             setMessage({ text: data.message, success: res.ok })
+            // EPIC 1 US-01 TASK-07: Aktualizacja stanu sesji po logowaniu
+            if (res.ok) {
+                window.dispatchEvent(new Event('auth-changed'))
+            }
         } catch {
             // EPIC 1 US-01 TASK-06: Implementacja logiki logowania -> brak połączenia z serwerem
             setMessage({ text: 'Brak połączenia z serwerem.', success: false })
