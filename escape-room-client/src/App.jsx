@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
@@ -11,8 +12,63 @@ function App() {
     const [gameInfo, setGameInfo] = useState(null)
     const [error, setError] = useState('')
 
+    // EPIC 1 US-01 TASK-07: Stan zalogowanego użytkownika
+    const [user, setUser] = useState(null)
+    const [checkingSession, setCheckingSession] = useState(true)
+
+    // EPIC 1 US-01 TASK-07: Sprawdzanie sesji
+    async function checkSession() {
+        try {
+            const response = await fetch('/api/auth/me', {
+                credentials: 'include'
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                setUser(data)
+            } else {
+                setUser(null)
+            }
+        } catch {
+            setUser(null)
+        } finally {
+            setCheckingSession(false)
+        }
+    }
+
     useEffect(() => {
-        fetch('http://localhost:5162/api/game/info')
+        // EPIC 1 US-01 TASK-07: Odczyt sesji po odświeżeniu
+        checkSession()
+
+        const handleAuthChange = () => checkSession()
+
+        window.addEventListener('auth-changed', handleAuthChange)
+
+        return () => {
+            window.removeEventListener('auth-changed', handleAuthChange)
+        }
+    }, [])
+
+    // EPIC 1 US-01 TASK-07: Wylogowanie użytkownika
+    async function logout() {
+        try {
+            const response = await fetch('/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include'
+            })
+
+            if (response.ok) {
+                setUser(null)
+            } else {
+                alert('Nie udało się wylogować.')
+            }
+        } catch {
+            alert('Brak połączenia z serwerem.')
+        }
+    }
+
+    useEffect(() => {
+        fetch('/api/game/info')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Nie udało się pobrać danych gry.')
@@ -39,14 +95,42 @@ function App() {
                         MYSTERY ROOMS
                     </Link>
 
-                    <Link to="/login" className="nav-label nav-link">
-                        ZALOGUJ SIĘ
-                    </Link>
+                    {/* EPIC 1 US-01 TASK-07: Menu zależne od sesji */}
+                    {!checkingSession && (
+                        user ? (
+                            <>
+                                <span className="nav-label">
+                                    WITAJ, {user.username}
+                                </span>
 
-                    {/* EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> link w menu */}
-                    <Link to="/register" className="nav-label nav-link">
-                        ZAŁÓŻ KONTO
-                    </Link>
+                                <button
+                                    type="button"
+                                    className="nav-label nav-link"
+                                    onClick={logout}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        font: 'inherit',
+                                        color: 'inherit'
+                                    }}
+                                >
+                                    WYLOGUJ SIĘ
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="nav-label nav-link">
+                                    ZALOGUJ SIĘ
+                                </Link>
+
+                                {/* EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> link w menu */}
+                                <Link to="/register" className="nav-label nav-link">
+                                    ZAŁÓŻ KONTO
+                                </Link>
+                            </>
+                        )
+                    )}
                 </div>
             </nav>
 

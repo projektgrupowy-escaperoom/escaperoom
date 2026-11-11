@@ -1,3 +1,8 @@
 .vs/
 bin/
 obj/
+/EscapeRoom.Api/EscapeRoom.Api.csproj.user
+# EPIC 1 US-01 TASK-07: Pliki lokalne i tymczasowe
+*.csproj.user
+*.db-shm
+*.db-wal
