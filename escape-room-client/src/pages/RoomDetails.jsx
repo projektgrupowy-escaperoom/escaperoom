@@ -17,6 +17,19 @@ function RoomDetails() {
         )
     }
 
+    // EPIC 2 TASK 03: Utworzenie mechanizmu rozpoczynania gry -> każde kliknięcie tworzy nową, unikalną sesję gry i otwiera rozgrywkę w osobnej karcie
+    function startGame(event) {
+        if (!room.gameImage) {
+            return
+        }
+
+        event.preventDefault()
+
+        const sessionId = crypto.randomUUID()
+
+        window.open(`/game/${room.id}?session=${sessionId}`, '_blank')
+    }
+
     return (
         <section className="rooms-section">
             <Link to="/rooms" className="back-button">
@@ -69,6 +82,8 @@ function RoomDetails() {
                     <Link
                         to={`/game/${room.id}`}
                         className="start-game-button"
+                        // EPIC 2 TASK 03: Utworzenie mechanizmu rozpoczynania gry -> utworzenie sesji przed przejściem do rozgrywki
+                        onClick={startGame}
                     >
                         ZACZNIJ GRĘ <span>→</span>
                     </Link>

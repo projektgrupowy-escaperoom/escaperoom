@@ -638,3 +638,190 @@ button {
 .room-art-label {
     z-index: 2;
 }
+
+/* EPIC 2 TASK 03: Utworzenie mechanizmu rozpoczynania gry -> rozgrywka na całe okno karty */
+.game-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    overflow: hidden;
+    background: #000;
+}
+
+/* kadr o proporcjach grafiki (1408x768), zawsze pokrywa całe okno */
+.game-main-frame {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100vw, calc(100vh * 1408 / 768));
+    aspect-ratio: 1408 / 768;
+    transform: translate(-50%, -50%);
+    container-type: inline-size;
+}
+
+.game-main-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* EPIC 2 TASK 03: Utworzenie mechanizmu rozpoczynania gry -> animacja żywego ognia na pochodniach */
+/* punkt zaczepienia = podstawa płomienia na grafice */
+.torch-fire {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.torch-fire-left {
+    left: 19.9%;
+    top: 27.6%;
+}
+
+.torch-fire-right {
+    left: 82.8%;
+    top: 27%;
+}
+
+.torch-glow {
+    position: absolute;
+    left: -14cqw;
+    top: -16cqw;
+    width: 28cqw;
+    height: 28cqw;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffb24a66 0%, #ff7a1a2e 30%, transparent 65%);
+    mix-blend-mode: screen;
+    animation: torch-glow 2.3s ease-in-out infinite;
+}
+
+.torch-flame {
+    position: absolute;
+    left: -1.5cqw;
+    bottom: 0;
+    width: 3cqw;
+    height: 6.4cqw;
+    border-radius: 50% 50% 50% 50% / 72% 72% 28% 28%;
+    background: radial-gradient(ellipse at 50% 85%, #fff3c4 0%, #ffc04d 30%, #ff7a1a 60%, transparent 78%);
+    filter: blur(0.25cqw);
+    mix-blend-mode: screen;
+    transform-origin: 50% 100%;
+    animation: torch-flame 0.85s ease-in-out infinite;
+}
+
+.torch-flame-inner {
+    left: -0.9cqw;
+    width: 1.8cqw;
+    height: 4cqw;
+    background: radial-gradient(ellipse at 50% 80%, #ffffff 0%, #ffe9a3 40%, transparent 75%);
+    animation-duration: 0.55s;
+    animation-direction: reverse;
+}
+
+.torch-fire-right .torch-glow,
+.torch-fire-right .torch-flame {
+    animation-delay: -0.4s;
+}
+
+@keyframes torch-flame {
+    0%, 100% {
+        transform: scale(1, 1) skewX(0deg);
+        opacity: 0.9;
+    }
+
+    20% {
+        transform: scale(0.9, 1.14) skewX(5deg);
+        opacity: 1;
+    }
+
+    45% {
+        transform: scale(1.08, 0.9) skewX(-6deg);
+        opacity: 0.8;
+    }
+
+    70% {
+        transform: scale(0.94, 1.2) skewX(3deg);
+        opacity: 1;
+    }
+
+    85% {
+        transform: scale(1.04, 0.96) skewX(-3deg);
+        opacity: 0.85;
+    }
+}
+
+@keyframes torch-glow {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.75;
+    }
+
+    18% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+
+    37% {
+        transform: scale(0.94);
+        opacity: 0.6;
+    }
+
+    58% {
+        transform: scale(1.05);
+        opacity: 0.95;
+    }
+
+    80% {
+        transform: scale(0.97);
+        opacity: 0.7;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .torch-glow,
+    .torch-flame {
+        animation: none;
+    }
+}
+
+/* TASK-04: Utworzenie interfejsu rozpoczynania gry -> wygląd przycisku START */
+.game-start-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000000b8;
+}
+
+.game-start-button {
+    padding: 17px 60px;
+    color: #17130d;
+    background: #d9a85b;
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 0 0 40px #000000aa;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    transition: background 0.25s ease;
+}
+
+    .game-start-button:hover {
+        background: #edc581;
+    }
+
+.game-session-id {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 14px;
+    margin: 0;
+    color: #c8c0b3;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-align: center;
+    text-shadow: 0 0 6px #000;
+}
