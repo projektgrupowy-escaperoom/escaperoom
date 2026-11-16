@@ -46,9 +46,37 @@ function RoomDetails() {
                     </div>
                 </div>
 
-                <p className="coming-soon">
-                    SYSTEM ROZGRYWKI — W PRZYGOTOWANIU
-                </p>
+                <div className="room-story">
+                    <p className="eyebrow">TWOJA MISJA</p>
+
+                    <h2>Poznaj historię</h2>
+
+                    {room.story.split('\n\n').map((paragraph, index) => (
+                        <p key={index} className="room-story-text">
+                            {paragraph}
+                        </p>
+                    ))}
+                </div>
+
+                <div className="start-game-section">
+                    <h2>GOTOWY NA WYZWANIE?</h2>
+
+                    <p>
+                        Przygotuj się, skup uwagę i sprawdź,
+                        czy uda Ci się rozwiązać wszystkie zagadki.
+                    </p>
+
+                    <Link
+                        to={`/game/${room.id}`}
+                        className="start-game-button"
+                    >
+                        ZACZNIJ GRĘ <span>→</span>
+                    </Link>
+
+                    <span className="start-game-note">
+                        CZAS ROZGRYWKI: {room.time.toUpperCase()}
+                    </span>
+                </div>
             </div>
         </section>
     )

@@ -26,6 +26,14 @@ function Rooms() {
                 {rooms.map((room) => (
                     <article className="room-card" key={room.id}>
                         <div className="room-art">
+                            <img
+                                src={room.image}
+                                alt={room.title}
+                                className="room-image"
+                            />
+
+                            <div className="room-image-overlay"></div>
+
                             <span className="room-number">{room.number}</span>
                             <span className="room-symbol">{room.symbol}</span>
                             <span className="room-art-label">CLASSIFIED FILE</span>
