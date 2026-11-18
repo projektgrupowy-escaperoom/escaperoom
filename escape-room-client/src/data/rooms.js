@@ -22,7 +22,7 @@ export const rooms = [
             'Starożytna świątynia skrywa sekret. Rozszyfruj hieroglify i odnajdź drogę do ukrytego skarbu.',
         image: '/images/pharaoh.jpg',
         // EPIC 2 TASK 03: Utworzenie mechanizmu rozpoczynania gry -> główna grafika rozgrywki
-        gameImage: '/images/pharaoh-chamber.jpg',
+        gameImage: '/images/pharaoh-chamber-2.png',
         story:
             'Podczas wyprawy archeologicznej odnajdujesz wejście do starożytnej świątyni, która przez tysiące lat pozostawała ukryta pod piaskami pustyni. Według legendy faraon ukrył w jej wnętrzu bezcenny skarb, którego pilnuje tajemnicza klątwa.\n\nGdy przekraczasz próg świątyni, wejście niespodziewanie się zamyka. Wokół znajdują się starożytne symbole, zagadkowe inskrypcje i mechanizmy, które od wieków nie były używane.\n\nAby wydostać się ze świątyni, musisz rozszyfrować hieroglify, odnaleźć ukryte wskazówki i rozwiązać zagadki pozostawione przez faraona. Czy uda Ci się odkryć tajemnicę grobowca i znaleźć wyjście?',
         difficulty: 'Łatwy',
