@@ -41,6 +41,28 @@ function Game() {
 
     const [gateOpened, setGateOpened] = useState(false)
 
+    // US 06: Rozwiązywanie zagadek pomieszczenie 2
+    const [chamber, setChamber] = useState('entrance')
+
+    // US 06: Rozwiązywanie zagadek pomieszczenie 2
+    // Za każdą pochodnią jest hieroglif; prawdziwe są tylko te za 5 zapalonymi pochodniami (Lotos i Sokół to fałszywe tropy)
+    const symbole = ['Skarabeusz', 'Wąż', 'Oko Horusa', 'Ibis', 'Lotos', 'Sokół', 'Szakal']
+    // Zapalone pochodnie zgodnie ze wskazówkami zegara (widok z góry), zaczynając od Skarabeusza:
+    // Skarabeusz -> Wąż -> Oko Horusa -> Ibis -> Szakal
+    const kolejnoscMaat = [0, 1, 2, 3, 6]
+    const [zbadanoNiszePierwszyRaz, setZbadanoNiszePierwszyRaz] = useState(false)
+    const [mamPioro, setMamPioro] = useState(false)
+    const [mamAnkh, setMamAnkh] = useState(false)
+    const [mamNaczynie, setMamNaczynie] = useState(false)
+    const [ankhWlozony, setAnkhWlozony] = useState(false)
+    const [mamSerce, setMamSerce] = useState(false)
+    const [pioroNaWadze, setPioroNaWadze] = useState(false)
+    const [serceNaWadze, setSerceNaWadze] = useState(false)
+    const [bramaOtwarta, setBramaOtwarta] = useState(false)
+    const [bloki, setBloki] = useState([0, 4, 5, 1, 2])
+    const [komunikat, setKomunikat] = useState('')
+    const [grafika, setGrafika] = useState(null)
+
     const room = rooms.find((item) => item.id === Number(id))
 
     if (!room) {
@@ -62,6 +84,8 @@ function Game() {
     // TASK-05: Utworzenie widoku zagadki -> zamykanie aktualnego okna
     const closePanel = () => {
         setActivePanel(null)
+        // US 06: po położeniu serca i pióra na wadze zamknięcie komunikatu pokazuje ostatni obraz komnaty
+        if (pioroNaWadze && serceNaWadze) setBramaOtwarta(true)
     }
 
     // TASK-05: Utworzenie widoku zagadki -> zapamiętanie odnalezienia zwoju
@@ -128,6 +152,148 @@ function Game() {
     const openGate = () => {
         setGateOpened(true)
     }
+
+    // US 06: Rozwiązywanie zagadek pomieszczenie 2
+    const zdobycieSerca = 'Kule idealnie pasowały do otworu! Już po wrzuceniu pierwszej z nich zauważyłeś, że krata delikatnie się uniosła. Gdy umieściłeś w środku wszystkie kule, krata podniosła się całkowicie, odsłaniając skamieniałe serce. Zabierasz je ze sobą. Chyba już wiesz, co z nim zrobić…'
+    const finał = 'Delikatnie kładziesz serce i pióro na szalach wagi. Przez chwilę z przerażeniem obserwujesz, jak waga niepewnie się kołysze. Raz cięższe wydaje się serce, za moment szala przechyla się na stronę pióra. Na szczęście po chwili obie szale powoli się wyrównują. Tym razem ci się udało! Drzwi powoli otwierają się, odsłaniając przejście do kolejnej komnaty.'
+
+    const odkryciePiora = 'Po ułożeniu ostatniego przycisku ołtarz gwałtownie zadrżał. Wskutek wstrząsów otaczający go pył i kurz wzbiły się wysoko w powietrze, tworząc gęstą mgłę. Przez krótką chwilę nie dało się dostrzec zupełnie niczego.\n\nGdy pył w końcu opadł, zauważyłeś, że ołtarz się otworzył. W jego wnętrzu spoczywało Pióro Prawdy. Ostrożnie zabierasz je ze sobą. Kto wie, być może jeszcze okaże się przydatne.'
+    const odkrycieSerca = 'Coś przykuwa twoją uwagę w kącie komnaty. Podchodzisz bliżej i dostrzegasz czarne, skamieniałe serce, zamknięte za metalową kratą. Po jego lewej stronie znajduje się otwór na klucz o bardzo charakterystycznym kształcie. Wygląda dziwnie znajomo…\n\nPo prawej stronie zauważasz kolejny otwór, jednak ten jest szczelnie zamknięty. Zastanawiasz się, co mogłoby go otworzyć.'
+
+    const pokaz = (tekst, obraz = null) => {
+        setKomunikat(tekst)
+        setGrafika(obraz)
+        openPanel('komnata2')
+    }
+
+    // Komunikat z przyciskiem "Dalej", który wraca do sali głównej
+    const pokazDalej = (tekst, obraz = null) => {
+        setKomunikat(tekst)
+        setGrafika(obraz)
+        openPanel('dalej')
+    }
+
+
+    const dodaj = (nazwa) => setFoundObjects((p) => [...p, nazwa])
+    const usun = (nazwa) => setFoundObjects((p) => p.filter((x) => x !== nazwa))
+
+    const kliknijNisze = () => {
+        if (mamPioro || pioroNaWadze) return pokaz('Skrytka w niszy jest już pusta.')
+        setKomunikat(zbadanoNiszePierwszyRaz ? '' : 'Widzisz ołtarz bogini Maat, a na nim kilka kamiennych bloków, każdy oznaczony innym symbolem. Gdzieś już je widziałeś.. Pierwszy z nich oznaczony Skarabeuszem jest znaczniej niżej od reszty, zupełnie jak wciśnięty przycisk, co to może oznaczać?')
+        setZbadanoNiszePierwszyRaz(true)
+        openPanel('nisza')
+    }
+
+    const obrocBlok = (i) => {
+        // Pierwszy blok (Skarabeusz) jest na stałe wciśnięty – wyznacza początek sekwencji
+        if (i === 0) return setKomunikat('Blok ze Skarabeuszem jest wciśnięty głęboko w ołtarz i ani drgnie.')
+        // Pozostałe bloki przełączają się między symbolami innymi niż Skarabeusz (indeksy 1..n-1)
+        const nowe = bloki.map((b, j) => (j === i ? (b % (symbole.length - 1)) + 1 : b))
+        setBloki(nowe)
+        const ulozone = nowe.every((b, j) => b === kolejnoscMaat[j])
+        if (ulozone) {
+            setMamPioro(true)
+            dodaj('🪶 Pióro Maat')
+            setKomunikat(odkryciePiora)
+            openPanel('pioro')
+        } else {
+            setKomunikat(`Kamienny blok obraca się z ciężkim zgrzytem. Widoczny symbol to: ${symbole[nowe[i]]}.`)
+        }
+    }
+
+    const kliknijPochodnie = (symbol, zapalona) => pokaz(zapalona
+        ? `Blask płonącej pochodni wyraźnie oświetla płaskorzeźbę za nią. Wyryto na niej symbol: ${symbol}.`
+        : `Pochodnia jest zgaszona, z jej czaszy unosi się jedynie cienka smużka dymu. W półmroku z trudem dostrzegasz wyryty za nią symbol: ${symbol}.`)
+
+    // Część z sercem jest zablokowana, dopóki gracz nie zdobędzie Pióra Maat
+    const znalezionoPioro = mamPioro || pioroNaWadze
+
+    const zabierzAnkh = () => {
+        if (!znalezionoPioro) return pokaz('Kamienny krzyż Ankh tkwi nieruchomo w ołtarzu, jakby przytrzymywała go niewidzialna siła. Najpierw musisz odnaleźć symbol prawdy.')
+        setMamAnkh(true)
+        dodaj('☥ Krzyż Ankh')
+        pokaz('Podnosisz kamienny krzyż Ankh. Tak! To ten kształt! Może za jego pomocą uda się otworzyć zamknięte serce.')
+    }
+
+    const zabierzNaczynie = () => {
+        if (!znalezionoPioro) return pokaz('Gliniany dzban ani drgnie – wydaje się przyrośnięty do kamiennego ołtarza. Najpierw musisz odnaleźć symbol prawdy.')
+        // Dzban można zabrać dopiero po włożeniu krzyża Ankh do zamka przy sercu
+        if (!ankhWlozony) return pokaz('Na ołtarzu stoi zwykły, gliniany dzban. Na razie nie wydaje się do niczego potrzebny.')
+        setMamNaczynie(true)
+        dodaj('🏺 Gliniany dzban')
+        pokaz('Zauważasz, że dzban jest czymś wypełniony. Zaglądasz do środka i dostrzegasz niewielkie kule. Są zaskakująco ciężkie, jakby wykonano je z ołowiu. Może właśnie tego potrzebujesz, by wypełnić tajemniczy otwór? Pora się przekonać!')
+    }
+
+    // Widok serca za kratą – otwierany złotym kołem po prawej stronie komnaty (dostępny po zdobyciu pióra)
+    const kliknijSerce = () => {
+        if (mamSerce || serceNaWadze) return pokaz('Nisza za kratą jest już pusta.')
+        // Po powrocie z dzbanem gracz od razu wsypuje kule do otworu i zabiera serce
+        if (ankhWlozony && mamNaczynie) return wezSerce()
+        // Po powrocie z krzyżem Ankh gracz od razu wkłada go do zamka
+        if (mamAnkh) wlozAnkh()
+        setKomunikat(mamAnkh || ankhWlozony ? ankhWZamku : odkrycieSerca)
+        openPanel('serce')
+    }
+
+    const ankhWZamku = 'Krzyż Ankh idealnie pasuje do zamka! Jednak coś jest nie tak… Zamiast otworzyć kratę chroniącą serce, odsłonił się jedynie niewielki otwór. Co można z nim zrobić? Może mechanizm działa na zasadzie dźwigni? Być może wystarczy wypełnić otwór czymś ciężkim, aby uniosły się kraty? Tylko skąd wziąć przedmiot, który będzie jednocześnie wystarczająco ciężki i na tyle mały, by zmieścić się w otworze?'
+
+    const wlozAnkh = () => {
+        setMamAnkh(false)
+        setAnkhWlozony(true)
+        usun('☥ Krzyż Ankh')
+    }
+
+    // Lewy otwór w kształcie krzyża Ankh
+    const kliknijZamekAnkh = () => {
+        if (ankhWlozony) return setKomunikat(ankhWZamku)
+        if (!mamAnkh) return setKomunikat('Otwór na klucz ma kształt krzyża Ankh. Gdzieś już widziałeś taki kształt…')
+        wlozAnkh()
+        setKomunikat(ankhWZamku)
+    }
+
+    // Prawy, okrągły otwór – otwiera się po włożeniu krzyża Ankh
+    const kliknijPrawyOtwor = () => {
+        if (!ankhWlozony) return setKomunikat('Okrągły otwór jest szczelnie zamknięty. Zastanawiasz się, co mogłoby go otworzyć.')
+        if (!mamNaczynie) return setKomunikat('Mechanizm jest otwarty, ale w środku jest pusto. Wygląda na to, że trzeba go czymś obciążyć.')
+        wezSerce()
+    }
+
+    const wezSerce = () => {
+        setMamNaczynie(false)
+        setMamSerce(true)
+        usun('🏺 Gliniany dzban')
+        dodaj('🖤 Kamienne serce')
+        pokazDalej(zdobycieSerca, '/images/heart-niche.jpg')
+    }
+
+    // Waga – serce i pióro kładzione są razem, gdy gracz ma oba przedmioty
+    const kliknijWage = () => {
+        if (pioroNaWadze && serceNaWadze) return pokaz('Szale wagi trwają w idealnej równowadze.')
+        if (!mamPioro) return pokaz('Szale wagi są puste. Potrzebujesz symbolu prawdy, który zrównoważy ciężar duszy.')
+        if (!mamSerce) return pokaz('Masz już Pióro Prawdy, ale na drugiej szali brakuje czegoś, co zostanie z nim zważone.')
+        setMamPioro(false)
+        setMamSerce(false)
+        setPioroNaWadze(true)
+        setSerceNaWadze(true)
+        usun('🪶 Pióro Maat')
+        usun('🖤 Kamienne serce')
+        pokazDalej(finał)
+    }
+
+    // US 06: Rozwiązywanie zagadek pomieszczenie 2 -> klikalne miejsca: [nazwa, left %, top %, szerokość %, wysokość %, akcja]
+    const punkty = [
+        // Pochodnie (na końcu listy, żeby leżały nad niszami tam, gdzie obszary się nakładają)
+        ['Pochodnia', 8, 15, 7, 28, () => kliknijPochodnie('Skarabeusz', true)],
+        ['Pochodnia', 22.5, 28, 5, 16, () => kliknijPochodnie('Lotos', false)],
+        ['Pochodnia', 35.5, 28, 3.5, 15, () => kliknijPochodnie('Wąż', true)],
+        ['Pochodnia', 42, 29, 3.5, 15, () => kliknijPochodnie('Oko Horusa', true)],
+        ['Pochodnia', 70, 29, 3.5, 16, () => kliknijPochodnie('Ibis', true)],
+        ['Pochodnia', 79, 24, 4.5, 21, () => kliknijPochodnie('Sokół', false)],
+        ['Pochodnia', 86, 16, 6, 30, () => kliknijPochodnie('Szakal', true)],
+        !mamAnkh && !ankhWlozony && ['Krzyż Ankh', 55, 67, 8, 10, zabierzAnkh],
+        !mamNaczynie && !mamSerce && !serceNaWadze && ['Gliniany dzban', 36, 57, 5, 13, zabierzNaczynie],
+        ['Waga', 40, 45, 19, 22, kliknijWage],
+    ].filter(Boolean)
 
     // EPIC 2 TASK 03: Utworzenie mechanizmu rozpoczynania gry -> rozgrywka z aktywną sesją zajmuje całe okno karty
     if (sessionId && room.gameImage) {
@@ -196,6 +362,64 @@ function Game() {
                                 )}
                             </button>
 
+                            {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 */}
+                            {chamber === 'anubis' && (
+                                <img src={bramaOtwarta ? '/images/corbram.jpg' : '/images/anubis-chamber.png'} alt="Komnata Anubisa" className="game-anubis-room" />
+                            )}
+
+                            {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 -> zapalona ostatnia pochodnia po prawej stronie */}
+                            {chamber === 'anubis' && !bramaOtwarta && (
+                                <span className="torch-fire torch-fire-anubis-right" aria-hidden="true">
+                                    <span className="torch-glow" />
+                                    <span className="torch-flame" />
+                                    <span className="torch-flame torch-flame-inner" />
+                                </span>
+                            )}
+
+                            {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 -> złote koło otwierające ołtarz Maat */}
+                            {chamber === 'anubis' && !bramaOtwarta && (
+                                <button
+                                    type="button"
+                                    className="game-passage-button game-maat-button"
+                                    aria-label="Ołtarz bogini Maat"
+                                    onClick={kliknijNisze}
+                                />
+                            )}
+
+                            {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 -> złote koło prowadzące do serca (po zdobyciu pióra) */}
+                            {chamber === 'anubis' && !bramaOtwarta && znalezionoPioro && (
+                                <button
+                                    type="button"
+                                    className="game-passage-button game-heart-button"
+                                    aria-label="Serce za kratą"
+                                    onClick={kliknijSerce}
+                                />
+                            )}
+
+                            {/* PRZEJŚCIE DO POMIESZCZENIA 3 */}
+                            {chamber === 'anubis' && bramaOtwarta && (
+                                <button
+                                    type="button"
+                                    className="game-passage-button game-room3-button"
+                                    aria-label="Przejdź do kolejnej komnaty"
+                                    onClick={() => {
+                                        // TODO: przejście do pomieszczenia 3
+                                    }}
+                                />
+                            )}
+
+                            {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 */}
+                            {chamber === 'anubis' && !bramaOtwarta && punkty.map(([nazwa, x, y, w, h, akcja], i) => (
+                                <button
+                                    key={i}
+                                    type="button"
+                                    className="game-c2-spot"
+                                    aria-label={nazwa}
+                                    style={{ left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%` }}
+                                    onClick={akcja}
+                                />
+                            ))}
+
                             <button
                                 type="button"
                                 className="game-interactive-object game-scroll-object"
@@ -242,6 +466,31 @@ function Game() {
                                     aria-label="Zbadaj bramę"
                                     onClick={discoverGate}
                                 />
+                            )}
+
+                            {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 */}
+                            {gateOpened && chamber === 'entrance' && (
+                                <button
+                                    type="button"
+                                    className="game-passage-button"
+                                    aria-label="Przejdź dalej"
+                                    onClick={() => setChamber('intro')}
+                                />
+                            )}
+
+                            {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 */}
+                            {chamber === 'intro' && (
+                                <div className="game-panel-overlay">
+                                    <div className="game-panel">
+                                        <p>
+                                            Ciężkie, kamienne wrota zatrzaskują się za Tobą z głuchym hukiem. Powietrze jest gęste, suche i pachnie starym pyłem oraz dymem z pochodni. W blasku migoczących płomieni wyłania się potężny posąg Anubisa - boga zmarłych, strzegącego przejścia w głąb piramidy. Przed nim stoi kamienny ołtarz. Jego puste szale wagi kołyszą się lekko, czekając na osąd. Za posągiem majaczą zamknięte, masywne drzwi pokryte hieroglifami. Aby przejść dalej, musicie udowodnić, że wasze czyny są lżejsze niż pióro prawdy. Szukaj go wyłącznie tam, gdzie pada blask ognia na kamienne filary - cień skrywa fałsz.
+                                        </p>
+
+                                        <button type="button" className="game-riddle-button" onClick={() => setChamber('anubis')}>
+                                            Dalej
+                                        </button>
+                                    </div>
+                                </div>
                             )}
 
                             {/* TASK-05: Utworzenie widoku zagadki -> otwierane okna interfejsu */}
@@ -588,6 +837,77 @@ function Game() {
                                                             </p>
                                                     </div>
                                                 )}
+                                            </>
+                                        )}
+
+                                        {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 */}
+                                        {activePanel === 'komnata2' && (
+                                            <>
+                                                <p>{komunikat}</p>
+                                                {grafika && (
+                                                    <div className="game-object-image">
+                                                        <img src={grafika} alt="" />
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 -> komunikat z powrotem do sali głównej */}
+                                        {activePanel === 'dalej' && (
+                                            <>
+                                                {komunikat.split('\n\n').map((akapit, i) => <p key={i}>{akapit}</p>)}
+                                                {grafika && (
+                                                    <div className="game-object-image">
+                                                        <img src={grafika} alt="" />
+                                                    </div>
+                                                )}
+                                                <button type="button" className="game-riddle-button" onClick={closePanel}>
+                                                    Dalej
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 -> odnalezienie Pióra Prawdy */}
+                                        {activePanel === 'pioro' && (
+                                            <>
+                                                {komunikat.split('\n\n').map((akapit, i) => <p key={i}>{akapit}</p>)}
+                                                <div className="game-object-image">
+                                                    <img src="/images/feather-niche.jpg" alt="Pióro Prawdy w otwartym ołtarzu" />
+                                                </div>
+                                                <button type="button" className="game-riddle-button" onClick={closePanel}>
+                                                    Dalej
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 -> serce za kratą */}
+                                        {activePanel === 'serce' && (
+                                            <>
+                                                <h2>Serce za kratą</h2>
+                                                {komunikat.split('\n\n').map((akapit, i) => <p key={i}>{akapit}</p>)}
+                                                <div className="game-object-image">
+                                                    <div className="game-heart-view">
+                                                        <img src="/images/heart-cage.jpg" alt="Kamienne serce za metalową kratą" />
+                                                        <button type="button" className="game-c2-spot game-heart-ankh-lock" aria-label="Otwór w kształcie krzyża Ankh" onClick={kliknijZamekAnkh} />
+                                                        <button type="button" className="game-c2-spot game-heart-right-lock" aria-label="Okrągły otwór" onClick={kliknijPrawyOtwor} />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* US 06: Rozwiązywanie zagadek pomieszczenie 2 */}
+                                        {activePanel === 'nisza' && (
+                                            <>
+                                                <h2>Ołtarz bogini Maat</h2>
+                                                <div className="game-object-image">
+                                                    <img src="/images/maat-altar.jpg" alt="Ołtarz bogini Maat z pięcioma kamiennymi blokami" />
+                                                </div>
+                                                {komunikat && <p>{komunikat}</p>}
+                                                {bloki.map((b, i) => (
+                                                    <button key={i} type="button" className={i === 0 ? 'game-riddle-button game-riddle-button-pressed' : 'game-riddle-button'} onClick={() => obrocBlok(i)}>
+                                                        {i + 1}. {symbole[b]}
+                                                    </button>
+                                                ))}
                                             </>
                                         )}
 
