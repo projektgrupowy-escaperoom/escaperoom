@@ -11,6 +11,7 @@ import Game from './pages/Game'
 import Pharaon from './components/pharaon'
 import './App.css'
 
+
 function App() {
     const [gameInfo, setGameInfo] = useState(null)
     const [error, setError] = useState('')
