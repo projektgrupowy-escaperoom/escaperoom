@@ -21,6 +21,7 @@ function Home() {
                 ODKRYJ POKOJE <span>→</span>
             </Link>
 
+
             <div className="stats">
                 <div>
                     <strong>01</strong>

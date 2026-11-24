@@ -3,7 +3,7 @@
 import { OBRAZY, POCHODNIE, TEKSTY } from './data'
 import './room2.css'
 
-export function Room2Scene({ room2 }) {
+export function Room2Scene({ room2, onNextRoom }) {
     const { bramaOtwarta, znalezionoPioro, punkty, kliknijNisze, kliknijSerce } = room2
 
     return (
@@ -20,9 +20,7 @@ export function Room2Scene({ room2 }) {
                     type="button"
                     className="game-passage-button game-room3-button"
                     aria-label="Przejdź do kolejnej komnaty"
-                    onClick={() => {
-                        // TODO: przejście do pomieszczenia 3
-                    }}
+                    onClick={onNextRoom}
                 />
             ) : (
                 <>

@@ -5,7 +5,7 @@ import { useRoom2 } from './useRoom2'
 import { Room2Intro, Room2Scene } from './Room2Scene'
 import { Room2Panels } from './Room2Panels'
 
-export default function Room2({ chamber, setChamber, setFoundObjects }) {
+export default function Room2({ chamber, setChamber, setFoundObjects,onNextRoom }) {
     const [activePanel, setActivePanel] = useState(null)
     const room2 = useRoom2({ openPanel: setActivePanel, setFoundObjects })
 
@@ -17,7 +17,7 @@ export default function Room2({ chamber, setChamber, setFoundObjects }) {
 
     return (
         <>
-            {chamber === 'anubis' && <Room2Scene room2={room2} />}
+            {chamber === 'anubis' && <Room2Scene room2={room2} onNextRoom={onNextRoom} />}
 
             {chamber === 'intro' && <Room2Intro onDalej={() => setChamber('anubis')} />}
 
