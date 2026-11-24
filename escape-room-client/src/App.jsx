@@ -7,6 +7,8 @@ import RoomDetails from './pages/RoomDetails'
 import Register from './pages/Register' // EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> import strony rejestracji
 import Login from './pages/Login'
 import Game from './pages/Game'
+// US 06: Gra faraona (pokój 2)
+import Pharaon from './components/pharaon'
 import './App.css'
 
 function App() {
@@ -139,7 +141,10 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/rooms/:id" element={<RoomDetails />} />
-                <Route path="/game/:id" element={<Game />} />
+                <Route
+                    path="/game/:id"
+                    element={<Game renderPharaon={(props) => <Pharaon {...props} />} />}
+                />
                 {/* EPIC 1 US-01 TASK-02: Utworzenie formularza rejestracji -> adres strony */}
                 <Route path="/register" element={<Register />} />
                 {/* EPIC 1 US-01 TASK-05: Utworzenie formularza logowania -> adres strony */}
