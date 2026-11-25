@@ -1,0 +1,710 @@
+﻿
+/* ROOM 4 – SANKTUARIUM WIECZNEGO SŁOŃCA */
+
+.room4-intro,
+.room4-page {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background: #171513;
+    color: #eee;
+}
+
+.room4-intro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.room4-intro-content {
+    width: 100%;
+    max-width: 900px;
+    padding: 35px;
+    box-sizing: border-box;
+    background: #252321;
+    border: 1px solid #80633d;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .7);
+}
+
+.room4-intro h1,
+.room4-header h1,
+.r4-panel h2,
+.room4-progress h2 {
+    color: #d8b16c;
+}
+
+.room4-intro h1,
+.room4-header {
+    text-align: center;
+}
+
+.room4-intro-story {
+    white-space: pre-line;
+    line-height: 1.8;
+    text-align: center;
+}
+
+.room4-page {
+    padding: 20px;
+}
+
+.room4-header {
+    margin-bottom: 20px;
+}
+
+    .room4-header h1 {
+        font-size: clamp(22px, 3vw, 34px);
+    }
+
+    .room4-header p {
+        color: #e0c38c;
+    }
+
+/* SCENA */
+
+.game-room4-container {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid #80633d;
+}
+
+.game-room4-background {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* NIEWIDOCZNE OBSZARY KLIKANIA */
+
+.game-r4-hotspot {
+    position: absolute;
+    z-index: 2;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+
+    .game-r4-hotspot:hover {
+        background: transparent;
+        outline: none;
+    }
+
+    .game-r4-hotspot:focus-visible {
+        outline: 2px solid #e0b45e;
+        outline-offset: 2px;
+        background: transparent;
+    }
+
+
+    .game-r4-hotspot:disabled {
+        cursor: default;
+        pointer-events: none;
+    }
+
+/*
+ * Pozycje dostosujemy do rzeczywistego
+ * obrazu sanktuarium.png.
+ */
+
+.r4-papyrus {
+    left: 7%;
+    top: 72%;
+    width: 20%;
+    height: 24%;
+}
+
+.r4-obelisks {
+    left: 4%;
+    top: 12%;
+    width: 34%;
+    height: 48%;
+}
+
+.r4-mirrors {
+    left: 40%;
+    top: 21%;
+    width: 22%;
+    height: 30%;
+}
+
+.r4-fragment-skarabeusz {
+    left: 28%;
+    top: 62%;
+    width: 10%;
+    height: 12%;
+}
+
+.r4-fragment-ankh {
+    left: 69%;
+    top: 70%;
+    width: 10%;
+    height: 12%;
+}
+
+.r4-fragment-oko {
+    left: 62%;
+    top: 58%;
+    width: 10%;
+    height: 12%;
+}
+
+.r4-altar {
+    left: 41%;
+    top: 59%;
+    width: 20%;
+    height: 24%;
+}
+
+.r4-exit {
+    left: 75%;
+    top: 9%;
+    width: 22%;
+    height: 52%;
+}
+
+.r4-scene-status {
+    position: absolute;
+    z-index: 4;
+    top: 3%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 80%;
+    padding: 10px 18px;
+    color: #e8d3a7;
+    background: rgba(20, 15, 10, .9);
+    border: 1px solid #80633d;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.r4-scene-success {
+    border-color: #5c9b62;
+    color: #b9e6b9;
+}
+
+/* OKNA ZAGADEK */
+
+.r4-panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, .8);
+}
+
+.r4-panel {
+    position: relative;
+    width: min(700px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 30px;
+    box-sizing: border-box;
+    color: #eee;
+    background: #252321;
+    border: 1px solid #80633d;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .7);
+}
+
+.r4-panel-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+    .r4-panel-close:hover {
+        color: #d8b16c;
+    }
+
+.r4-panel-content h2 {
+    margin-top: 0;
+    padding-right: 30px;
+}
+
+.r4-panel-content p {
+    line-height: 1.7;
+}
+
+.r4-papyrus-text {
+    padding: 20px;
+    margin: 15px 0;
+    color: #302516;
+    background: #e0c38c;
+    border-radius: 6px;
+    font-family: Georgia, serif;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+/* OBELISKI */
+
+.r4-obelisks-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.r4-obelisk {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+    min-height: 170px;
+    padding: 12px 6px;
+    color: #eee;
+    background: #393631;
+    border: 2px solid #80633d;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+    .r4-obelisk:hover:not(:disabled),
+    .r4-obelisk.selected {
+        background: #59452b;
+        border-color: #e0b45e;
+    }
+
+    .r4-obelisk:disabled {
+        cursor: default;
+    }
+
+.r4-obelisk-symbol {
+    font-size: 36px;
+}
+
+.r4-obelisk small {
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* ZWIERCIADŁA */
+
+.r4-mirrors-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.r4-mirror {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 8px;
+    color: #eee;
+    background: #393631;
+    border: 2px solid #80633d;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+    .r4-mirror:hover:not(:disabled) {
+        border-color: #e0b45e;
+    }
+
+    .r4-mirror strong {
+        color: #e0c38c;
+        font-size: 42px;
+    }
+
+/* FRAGMENTY PIECZĘCI */
+
+.r4-fragments-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.r4-fragment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 125px;
+    padding: 12px 6px;
+    color: #999;
+    background: #393631;
+    border: 1px solid #80633d;
+    border-radius: 7px;
+    text-align: center;
+}
+
+    .r4-fragment strong {
+        font-size: 36px;
+    }
+
+    .r4-fragment.found {
+        color: #e0c38c;
+        border-color: #d8b16c;
+        background: #51422d;
+    }
+
+    .r4-fragment small {
+        font-size: 12px;
+    }
+
+/* PRZYCISKI I KOMUNIKATY */
+
+.r4-action-button {
+    padding: 11px 18px;
+    margin-top: 12px;
+    color: #f5e6c8;
+    background: #80633d;
+    border: 1px solid #b18a50;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+    .r4-action-button:hover:not(:disabled) {
+        background: #9b7848;
+    }
+
+    .r4-action-button:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+    }
+
+.r4-message {
+    padding: 12px;
+    color: #eee;
+    background: #393631;
+    border-left: 3px solid #d8b16c;
+    border-radius: 4px;
+}
+
+.r4-success {
+    color: #b9e6b9;
+    font-weight: 600;
+}
+
+
+.room4-progress {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #252321;
+    border: 1px solid #80633d;
+    border-radius: 8px;
+}
+
+    .room4-progress h2 {
+        margin-top: 0;
+        font-size: 19px;
+    }
+
+    .room4-progress ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 25px;
+        padding-left: 20px;
+    }
+
+    .room4-progress li {
+        line-height: 1.5;
+    }
+
+
+@media (max-width: 600px) {
+    .room4-intro,
+    .room4-page {
+        padding: 12px;
+    }
+
+    .room4-intro-content,
+    .r4-panel {
+        padding: 22px 15px;
+    }
+
+    .r4-panel-overlay {
+        padding: 10px;
+    }
+
+    .r4-obelisks-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .r4-fragments-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .r4-obelisk {
+        min-height: 135px;
+    }
+
+    .r4-obelisk-symbol,
+    .r4-fragment strong {
+        font-size: 28px;
+    }
+
+    .r4-mirror strong {
+        font-size: 30px;
+    }
+
+    .room4-progress ul {
+        display: block;
+    }
+}
+
+
+
+.r4-light-board {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    width: min(100%, 460px);
+    aspect-ratio: 1 / 1;
+    margin: 24px auto;
+    overflow: hidden;
+    background: #18120d;
+    border: 6px solid #80633d;
+    border-radius: 8px;
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8), 0 0 18px rgba(216, 177, 108, 0.2);
+}
+
+.r4-light-cell {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    color: #e0c38c;
+    background: #383026;
+    border: 1px solid #665137;
+    font-size: clamp(18px, 4vw, 32px);
+    box-sizing: border-box;
+}
+
+    .r4-light-cell.lit {
+        background: #554526;
+    }
+
+    .r4-light-cell.blocked {
+        color: #aaa;
+        background: #211f1c;
+    }
+
+    .r4-light-cell.target {
+        color: #f9d77d;
+        background: #4d351a;
+        text-shadow: 0 0 12px #e0b45e;
+    }
+
+.r4-light-beam {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    filter: drop-shadow(0 0 7px #ffbf36);
+}
+
+.r4-board-mirror {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 75%;
+    height: 75%;
+    padding: 0;
+    color: #d8f3ff;
+    background: #344651;
+    border: 2px solid #91bbc8;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: clamp(22px, 5vw, 45px);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+}
+
+    .r4-board-mirror:hover:not(:disabled) {
+        background: #476776;
+        transform: scale(1.08);
+    }
+
+    .r4-board-mirror:focus-visible {
+        outline: 3px solid #ffd45b;
+        outline-offset: 2px;
+    }
+
+    .r4-board-mirror:disabled {
+        cursor: default;
+        opacity: 0.9;
+    }
+
+@media (max-width: 600px) {
+    .r4-light-board {
+        border-width: 3px;
+    }
+
+    .r4-board-mirror {
+        border-width: 1px;
+        border-radius: 4px;
+    }
+}
+
+
+
+.r4-seal-slots {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.r4-seal-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 85px;
+    height: 85px;
+    color: #e0c38c;
+    background: #30271e;
+    border: 2px solid #a17c43;
+    border-radius: 50%;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.6);
+    font-size: 38px;
+}
+
+.r4-seal-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.r4-seal-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 125px;
+    padding: 12px;
+    color: #e0c38c;
+    background: #393631;
+    border: 2px solid #80633d;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+    .r4-seal-option strong {
+        font-size: 38px;
+    }
+
+    .r4-seal-option span {
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .r4-seal-option:hover:not(:disabled) {
+        background: #59452b;
+        border-color: #e0b45e;
+    }
+
+    .r4-seal-option:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+@media (max-width: 600px) {
+    .r4-seal-slot {
+        width: 65px;
+        height: 65px;
+        font-size: 30px;
+    }
+
+    .r4-seal-options {
+        gap: 6px;
+    }
+
+    .r4-seal-option {
+        min-height: 100px;
+        padding: 8px 4px;
+    }
+
+        .r4-seal-option strong {
+            font-size: 28px;
+        }
+}
+
+
+.room4-victory {
+    min-height: 100vh;
+    background-image: url('/images/pharaon/room4/victory-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.room4-victory-overlay {
+    width: 100%;
+    min-height: 100vh;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.room4-victory-content {
+    max-width: 760px;
+    width: 100%;
+    background: rgba(20, 14, 9, 0.82);
+    border: 2px solid #a17c43;
+    border-radius: 14px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.45);
+    padding: 36px 28px;
+    text-align: center;
+    color: #f3e3bc;
+}
+
+    .room4-victory-content h1 {
+        margin-bottom: 20px;
+        color: #f0c56b;
+    }
+
+    .room4-victory-content p {
+        margin-bottom: 16px;
+        line-height: 1.7;
+    }
+
+    .room4-victory-content .r4-action-button {
+        margin-top: 12px;
+    }

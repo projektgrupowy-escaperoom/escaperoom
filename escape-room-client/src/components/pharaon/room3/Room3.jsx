@@ -55,7 +55,12 @@ export default function Room3({ onNextRoom }) {
                 bramaOtwarta={room.bramaOtwarta}
             />
 
-            <Room3Panels {...room} />
+
+                <Room3Panels
+                    {...room}
+                    przejdzDalej={onNextRoom}
+                />
+
         </main>
     )
 

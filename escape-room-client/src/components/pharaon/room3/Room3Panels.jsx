@@ -342,12 +342,15 @@ export default function Room3Panels({
                     {/* TODO: Podłączyć obsługę kliknięcia, która uruchomi
             komponent przejścia do Komnaty 4. */}
 
+
                     <button
                         type="button"
                         className="r3-action-button"
+                        onClick={przejdzDalej}
                     >
                         Przejdź do kolejnej komnaty
                     </button>
+
                 </>
             )}
         </div>
