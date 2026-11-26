@@ -9,6 +9,8 @@ import Login from './pages/Login'
 import Game from './pages/Game'
 // US 06: Gra faraona (pokój 2)
 import Pharaon from './components/pharaon'
+// US-06: Rozwiązywanie zagadek pomieszczenie 1 labolatorium -> Klatka Reakcyjna
+import LabRoom1 from './components/lab/room1'
 import './App.css'
 
 
@@ -142,6 +144,8 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/rooms/:id" element={<RoomDetails />} />
+                {/* US-06: Rozwiązywanie zagadek pomieszczenie 1 labolatorium -> trasa /game/1 ma pierwszeństwo przed /game/:id */}
+                <Route path="/game/1" element={<LabRoom1 />} />
                 <Route
                     path="/game/:id"
                     element={<Game renderPharaon={(props) => <Pharaon {...props} />} />}

@@ -1,0 +1,1015 @@
+/* Laboratorium – Pokój 1: Klatka Reakcyjna */
+/* US-06: Rozwiązywanie zagadek pomieszczenie 1 labolatorium -> style pokoju */
+
+body:has(.lab1) {
+    margin: 0;
+    background: #05080b;
+}
+
+.lab1 {
+    --lab-bg: #05080b;
+    --lab-panel: rgba(9, 15, 21, 0.96);
+    --lab-line: rgba(148, 163, 184, 0.22);
+    --lab-text: #d6dde4;
+    --lab-muted: #8796a5;
+    --lab-emerald: #10b981;
+    --lab-emerald-hi: #34d399;
+    --lab-blue: #38bdf8;
+    --lab-danger: #f87171;
+
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 12px 16px 16px;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.08), transparent 60%),
+        var(--lab-bg);
+    color: var(--lab-text);
+    font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.lab1 *,
+.lab1 *::before,
+.lab1 *::after {
+    box-sizing: border-box;
+}
+
+.lab1.is-dragging,
+.lab1.is-dragging * {
+    cursor: grabbing !important;
+}
+
+.lab1 button {
+    font: inherit;
+    color: inherit;
+}
+
+.lab1-frame {
+    position: relative;
+    width: min(1280px, 100%, calc((100vh - 170px) * 16 / 9));
+    min-width: min(100%, 320px);
+    margin: 0 auto;
+}
+
+/* ---------- Pasek górny ---------- */
+
+.lab1-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.lab1-title {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+}
+
+.lab1-title strong {
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ecfdf5;
+}
+
+.lab1-title span {
+    font-size: 0.8rem;
+    color: var(--lab-muted);
+}
+
+.lab1-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    border: 1px solid var(--lab-emerald);
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.12);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.lab1-chip .lab1-item-img,
+.lab1-chip .lab1-item-emoji {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+}
+
+.lab1-tools {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.lab1-tool {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--lab-line);
+    border-radius: 50%;
+    background: rgba(15, 23, 32, 0.9);
+    font-size: 22px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.lab1-tool:hover,
+.lab1-tool.is-active {
+    border-color: var(--lab-blue);
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+}
+
+.lab1-tool:active {
+    transform: scale(0.95);
+}
+
+.lab1-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: var(--lab-emerald);
+    color: #022c22;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+/* ---------- Scena ---------- */
+
+.lab1-stage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--lab-line);
+    border-radius: 12px;
+    background: #000;
+    container-type: inline-size;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.lab1-stage.is-aiming {
+    cursor: crosshair;
+}
+
+.lab1-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+/* Zapasowe tła, gdy brak grafik */
+.lab1-bg-fallback--pokoj {
+    background:
+        linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.55) 55%),
+        radial-gradient(ellipse at 50% 10%, #2a3a44, #0b1217 70%);
+}
+
+.lab1-bg-fallback--stol {
+    background:
+        linear-gradient(180deg, transparent 72%, #1a1f24 72%),
+        radial-gradient(ellipse at 55% 0%, #3d3a2c, #111417 70%);
+}
+
+.lab1-bg-fallback--drzwi {
+    background:
+        linear-gradient(90deg, #262b30 0 31%, #1b1f23 31% 58%, #23282d 58%);
+}
+
+.lab1-hotspot {
+    position: absolute;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+
+.lab1-hotspot:hover,
+.lab1-hotspot:focus-visible {
+    border-color: rgba(56, 189, 248, 0.6);
+    background: rgba(56, 189, 248, 0.07);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.3);
+    outline: none;
+}
+
+.lab1-stage.is-dragging .lab1-hotspot {
+    border: 2px dashed rgba(255, 255, 255, 0.18);
+}
+
+.lab1-stage .lab1-hotspot.is-target {
+    border: 2px dashed var(--lab-emerald-hi);
+    background: rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 22px rgba(52, 211, 153, 0.5);
+}
+
+.lab1-bg-fallback ~ .lab1-hotspot {
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+}
+
+.lab1-bg-fallback ~ .lab1-hotspot::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max-content;
+    max-width: 140%;
+    transform: translate(-50%, -50%);
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #e2e8f0;
+    font-size: clamp(9px, 1.1cqw, 13px);
+    pointer-events: none;
+}
+
+.lab1-flask {
+    border-radius: 35% 35% 18% 18%;
+}
+
+.lab1-round {
+    border-radius: 50%;
+}
+
+/* Śrubokręt pod ściereczką */
+.lab1-pickup {
+    display: grid;
+    place-items: center;
+    padding: 4%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    animation: lab1-pulse 1.8s ease-in-out infinite;
+}
+
+.lab1-pickup .lab1-item-img {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+@keyframes lab1-pulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.35); }
+    50% { box-shadow: 0 0 24px rgba(56, 189, 248, 0.8); }
+}
+
+/* Śrubki na skrzynce */
+.lab1-screws i {
+    position: absolute;
+    width: max(4px, 0.45cqw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f1f5f9, #64748b);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+}
+
+.lab1-screws i:nth-child(1) { left: 8%; top: 14%; }
+.lab1-screws i:nth-child(2) { right: 8%; top: 14%; }
+.lab1-screws i:nth-child(3) { left: 8%; bottom: 14%; }
+.lab1-screws i:nth-child(4) { right: 8%; bottom: 14%; }
+
+.lab1-box.is-open {
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.lab1-glint {
+    animation: lab1-glint 4s ease-in-out infinite;
+}
+
+@keyframes lab1-glint {
+    0%, 85%, 100% { box-shadow: none; }
+    92% { box-shadow: 0 0 14px rgba(255, 244, 214, 0.45); }
+}
+
+/* US-08: Ukończenie pokoju pomieszczenie 1 labolatorium -> otwarte drzwi + jasnoniebieskie kółko */
+.lab1-door-open,
+.lab1-door-gap {
+    background:
+        radial-gradient(ellipse at 50% 45%, rgba(56, 189, 248, 0.35), transparent 60%),
+        linear-gradient(180deg, #02060c, #071521 60%, #02060c);
+    box-shadow: inset 0 0 40px #000;
+}
+
+.lab1-door-gap {
+    position: absolute;
+    pointer-events: none;
+    animation: lab1-fade 0.8s ease-out;
+}
+
+.lab1-exit {
+    position: absolute;
+    z-index: 5;
+    width: max(26px, 3.4cqw);
+    aspect-ratio: 1;
+    padding: 0;
+    border: 2px solid #e0f2fe;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #bae6fd, #38bdf8 60%, #0ea5e9);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.8), 0 0 40px rgba(56, 189, 248, 0.4);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    animation: lab1-exit 1.6s ease-in-out infinite;
+}
+
+.lab1-exit:hover {
+    box-shadow: 0 0 26px rgba(56, 189, 248, 1), 0 0 60px rgba(56, 189, 248, 0.6);
+}
+
+@keyframes lab1-exit {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.12); }
+}
+
+@keyframes lab1-fade {
+    from { opacity: 0; }
+}
+
+/* Kolby: reakcja i piana */
+.lab1-liquid {
+    position: absolute;
+    border-radius: 8% 8% 45% 45%;
+    pointer-events: none;
+}
+
+.lab1-liquid--emerald {
+    background: radial-gradient(ellipse at 50% 60%, #34d399, #059669 75%);
+    mix-blend-mode: color;
+    filter: saturate(1.6);
+    animation: lab1-fade 1.4s ease-out;
+}
+
+.lab1-digit {
+    position: absolute;
+    transform: translateX(-50%);
+    color: var(--lab-emerald-hi);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: max(18px, 4.2cqw);
+    font-weight: 800;
+    line-height: 1;
+    text-shadow: 0 0 12px #10b981, 0 0 30px #10b981;
+    pointer-events: none;
+    animation: lab1-rise 1.2s ease-out;
+}
+
+@keyframes lab1-rise {
+    from { opacity: 0; transform: translate(-50%, 30%); }
+}
+
+.lab1-foam {
+    background:
+        radial-gradient(circle at 20% 40%, rgba(255, 255, 255, 0.85) 0 9%, transparent 10%),
+        radial-gradient(circle at 45% 25%, rgba(255, 255, 255, 0.8) 0 12%, transparent 13%),
+        radial-gradient(circle at 70% 45%, rgba(255, 255, 255, 0.85) 0 10%, transparent 11%),
+        radial-gradient(circle at 55% 60%, rgba(230, 230, 230, 0.7) 0 14%, transparent 15%),
+        rgba(200, 200, 190, 0.45);
+    animation: lab1-foam 2.2s ease-out forwards;
+}
+
+@keyframes lab1-foam {
+    0% { opacity: 0; transform: translateY(20%); }
+    25% { opacity: 1; transform: translateY(-25%); }
+    100% { opacity: 0; transform: translateY(-60%); }
+}
+
+/* Drzwi: zielony ekran zamka i zawór */
+.lab1-screen-ok {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: #022c22;
+    color: var(--lab-emerald-hi);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: max(9px, 1.5cqw);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-shadow: 0 0 8px var(--lab-emerald);
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.6);
+    pointer-events: none;
+    animation: lab1-fade 0.5s;
+}
+
+.lab1-valve-ok {
+    position: absolute;
+    border: 3px solid var(--lab-emerald-hi);
+    border-radius: 50%;
+    box-shadow: 0 0 24px rgba(52, 211, 153, 0.7), inset 0 0 24px rgba(52, 211, 153, 0.5);
+    pointer-events: none;
+    animation: lab1-fade 0.8s;
+}
+
+/* Wnętrze skrzynki */
+.lab1-crate {
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.08), transparent 60%),
+        linear-gradient(135deg, #3a4148, #1b2026 55%, #2c3238);
+}
+
+.lab1-crate::before {
+    content: '';
+    position: absolute;
+    inset: 14% 18% 18%;
+    border: 6px solid #59626b;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #0c1014, #161c21);
+    box-shadow: inset 0 10px 40px #000;
+}
+
+.lab1-crate-cover {
+    position: absolute;
+    right: 3%;
+    bottom: 6%;
+    width: 22%;
+    height: 34%;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #8d969e, #4b535a);
+    transform: rotate(-12deg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.lab1-crate-items {
+    position: absolute;
+    inset: 18% 22% 22%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6cqw;
+}
+
+.lab1-crate-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 18cqw;
+    padding: 1cqw;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    font-size: max(11px, 1.3cqw);
+}
+
+.lab1-crate-item .lab1-item-img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.lab1-paper-mini {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: linear-gradient(160deg, #efe6cc, #cfc19b);
+    color: #3b3222;
+    font-family: 'Segoe Print', 'Bradley Hand', cursive;
+    font-size: max(11px, 1.6cqw);
+    transform: rotate(-4deg);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.lab1-crate-empty {
+    margin: 0;
+    color: var(--lab-muted);
+    font-size: max(12px, 1.5cqw);
+}
+
+.lab1-back {
+    position: absolute;
+    left: 1.5%;
+    bottom: 3%;
+    z-index: 6;
+    padding: 6px 14px;
+    border: 1px solid var(--lab-line);
+    border-radius: 999px;
+    background: rgba(5, 8, 11, 0.8);
+    font-size: max(12px, 1.2cqw);
+    cursor: pointer;
+}
+
+.lab1-back:hover {
+    border-color: var(--lab-blue);
+}
+
+/* ---------- Panele (lupka, plecak) ---------- */
+
+.lab1-panel {
+    position: absolute;
+    top: 58px;
+    right: 0;
+    z-index: 30;
+    width: min(360px, 100%);
+    max-height: calc(100% - 70px);
+    overflow-y: auto;
+    padding: 14px 16px 16px;
+    border: 1px solid var(--lab-line);
+    border-radius: 12px;
+    background: var(--lab-panel);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    animation: lab1-slide 0.18s ease-out;
+}
+
+.lab1-panel.is-passthrough {
+    pointer-events: none;
+    opacity: 0.25;
+}
+
+@keyframes lab1-slide {
+    from { opacity: 0; transform: translateY(-6px); }
+}
+
+.lab1-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lab1-panel h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #f1f5f9;
+}
+
+.lab1-panel h3 {
+    margin: 18px 0 6px;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lab-muted);
+}
+
+.lab1-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.lab1-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lab1-muted {
+    margin: 6px 0;
+    color: var(--lab-muted);
+    font-size: 0.88rem;
+}
+
+/* US-07: Podpowiedzi pomieszczenie 1 labolatorium -> etap, pasek postępu i lista podpowiedzi w lupce */
+.lab1-stage-label {
+    margin: 8px 0 4px;
+    font-size: 0.85rem;
+    color: var(--lab-emerald-hi);
+}
+
+.lab1-progress {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.lab1-progress span {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.lab1-progress .done { background: var(--lab-emerald); }
+.lab1-progress .now { background: var(--lab-blue); }
+
+.lab1-hints {
+    margin: 6px 0 10px;
+    padding-left: 20px;
+    font-size: 0.92rem;
+}
+
+.lab1-hints li + li {
+    margin-top: 6px;
+}
+
+.lab1-notes-list,
+.lab1-log,
+.lab1-bag {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lab1-notes-list button {
+    width: 100%;
+    margin-bottom: 4px;
+    padding: 6px 10px;
+    border: 1px solid var(--lab-line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    text-align: left;
+    cursor: pointer;
+}
+
+.lab1-notes-list button:hover {
+    border-color: var(--lab-blue);
+}
+
+.lab1-log li {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.8rem;
+    color: var(--lab-muted);
+}
+
+.lab1-log li:first-child {
+    color: var(--lab-text);
+}
+
+.lab1-bag {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.lab1-bag-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 8px 6px;
+    border: 1px solid var(--lab-line);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 0.78rem;
+    line-height: 1.2;
+    cursor: grab;
+    touch-action: none;
+}
+
+.lab1-bag-item:hover {
+    border-color: var(--lab-blue);
+}
+
+.lab1-bag-item.is-selected {
+    border-color: var(--lab-emerald);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+}
+
+.lab1-bag-item.is-ghosted {
+    opacity: 0.35;
+}
+
+.lab1-item-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #fff;
+    pointer-events: none;
+}
+
+.lab1-item-emoji {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 34px;
+}
+
+.lab1-ghost {
+    position: fixed;
+    z-index: 1000;
+    width: 76px;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 2px var(--lab-emerald);
+    pointer-events: none;
+}
+
+/* ---------- Pasek komunikatów ---------- */
+
+.lab1-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 3.4em;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--lab-line);
+    border-left: 3px solid var(--lab-emerald);
+    border-radius: 10px;
+    background: rgba(9, 15, 21, 0.92);
+}
+
+.lab1-message-icon {
+    color: var(--lab-emerald-hi);
+    font-size: 1.2rem;
+}
+
+.lab1-message p {
+    margin: 0;
+    font-size: 0.95rem;
+    animation: lab1-fade 0.35s;
+}
+
+/* ---------- Okna ---------- */
+
+.lab1-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(3px);
+    animation: lab1-fade 0.25s;
+}
+
+.lab1-overlay--solid {
+    background:
+        linear-gradient(rgba(3, 6, 9, 0.82), rgba(3, 6, 9, 0.94)),
+        url('/images/lab/room1/labroom1.png') center / cover,
+        #03060a;
+}
+
+.lab1-modal {
+    width: min(560px, 100%);
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    padding: 24px;
+    border: 1px solid var(--lab-line);
+    border-radius: 14px;
+    background: #0b1218;
+    color: var(--lab-text);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.lab1-modal h1,
+.lab1-modal h2 {
+    margin: 0 0 6px;
+    color: #f8fafc;
+}
+
+.lab1-intro {
+    text-align: center;
+}
+
+.lab1-intro h1 {
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+    letter-spacing: 0.04em;
+}
+
+.lab1-kicker {
+    margin: 0 0 6px;
+    color: var(--lab-emerald-hi);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.lab1-sub {
+    margin: 0 0 16px;
+    color: var(--lab-muted);
+}
+
+.lab1-story {
+    font-size: 1.02rem;
+    line-height: 1.65;
+}
+
+.lab1-voice blockquote {
+    margin: 14px 0;
+    padding: 12px 16px;
+    border-left: 3px solid var(--lab-danger);
+    background: rgba(248, 113, 113, 0.06);
+    font-style: italic;
+    text-align: left;
+    line-height: 1.65;
+}
+
+.lab1-btn {
+    margin-top: 8px;
+    padding: 9px 18px;
+    border: 1px solid var(--lab-emerald);
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.15);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.lab1-btn:hover {
+    background: rgba(16, 185, 129, 0.3);
+}
+
+.lab1-btn--big {
+    padding: 12px 30px;
+    font-size: 1.05rem;
+}
+
+.lab1-btn--ghost {
+    border-color: var(--lab-line);
+    background: transparent;
+}
+
+/* Notatki */
+.lab1-note--papier {
+    border: none;
+    background: linear-gradient(170deg, #f3ead2, #d9cba4);
+    color: #2d261a;
+}
+
+.lab1-note--papier h2 {
+    color: #2d261a;
+}
+
+.lab1-note--papier p {
+    font-family: 'Segoe Print', 'Bradley Hand', cursive;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.lab1-note--papier .lab1-btn {
+    border-color: #6b5b3a;
+    background: rgba(107, 91, 58, 0.12);
+    color: #2d261a;
+}
+
+.lab1-note--glos p {
+    font-style: italic;
+    line-height: 1.65;
+}
+
+.lab1-colors {
+    margin: 14px 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.1rem;
+}
+
+.lab1-colors li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+}
+
+.lab1-colors span {
+    width: 32px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+/* Zamek szyfrowy */
+.lab1-keypad {
+    width: min(320px, 100%);
+    text-align: center;
+    background: linear-gradient(180deg, #1c2228, #0f1418);
+}
+
+.lab1-display {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #020617;
+    box-shadow: inset 0 0 14px rgba(56, 189, 248, 0.25);
+}
+
+.lab1-display span {
+    width: 36px;
+    color: var(--lab-blue);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 1.8rem;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+.lab1-display.is-error {
+    box-shadow: inset 0 0 14px rgba(248, 113, 113, 0.45);
+    animation: lab1-shake 0.35s;
+}
+
+@keyframes lab1-shake {
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+
+.lab1-error {
+    margin: 0 0 10px;
+    color: var(--lab-danger);
+    font-size: 0.85rem;
+}
+
+.lab1-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.lab1-keys button {
+    height: 52px;
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 8px;
+    background: #0b1624;
+    color: #e0f2fe;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 1.35rem;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+    cursor: pointer;
+}
+
+.lab1-keys button:hover {
+    background: #12243a;
+}
+
+.lab1-keys button:active {
+    transform: scale(0.96);
+}
+
+.lab1-keys .is-clear {
+    border-color: rgba(248, 113, 113, 0.6);
+    color: var(--lab-danger);
+}
+
+.lab1-keys .is-ok {
+    border-color: rgba(52, 211, 153, 0.6);
+    color: var(--lab-emerald-hi);
+}
+
+/* US-08: Ukończenie pokoju pomieszczenie 1 labolatorium -> ekran przejścia */
+.lab1-portal {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #e0f2fe, #38bdf8 55%, #0369a1);
+    box-shadow: 0 0 40px #38bdf8, 0 0 100px rgba(56, 189, 248, 0.5);
+    animation: lab1-portal 2s ease-in-out infinite;
+}
+
+@keyframes lab1-portal {
+    50% { transform: scale(1.1); box-shadow: 0 0 60px #38bdf8, 0 0 140px rgba(56, 189, 248, 0.6); }
+}
+
+@media (max-width: 640px) {
+    .lab1 {
+        padding: 8px 16px 12px;
+    }
+
+    .lab1-title strong {
+        font-size: 0.9rem;
+    }
+
+    .lab1-tool {
+        width: 42px;
+        height: 42px;
+        font-size: 19px;
+    }
+
+    .lab1-panel {
+        position: fixed;
+        top: auto;
+        right: 8px;
+        bottom: 8px;
+        left: 8px;
+        width: auto;
+        max-height: 60vh;
+    }
+
+    .lab1-message p {
+        font-size: 0.88rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lab1 *,
+    .lab1 *::before,
+    .lab1 *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
